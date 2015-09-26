@@ -20,9 +20,9 @@ public class Main {
         daServer.doAccept();
         ExecutorService pool = new ThreadPoolExecutor(8,8,0, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(64), new ThreadPoolExecutor.CallerRunsPolicy());
         byte[] buffer = new byte[256];
-        for (int i = 0; i < 1024; i++) {
+        for (int i = 1; i < 1025; i++) {
             try {
-                pool.submit(new Client(serverport));
+                pool.submit(new Client(serverport, i));
                 System.out.println("Shall we continue? Waiting for input: ");
                 System.out.flush();
                 //try {System.in.read(buffer);} catch (IOException e) {}

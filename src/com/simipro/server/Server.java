@@ -48,6 +48,8 @@ public class Server extends  AbstractServer {
                         if (sessionli.handleInput(bufferli,len)) {
                             sessionli.getChannel().read(bufferli, sessionli, this);
                         } else {
+                                // here we can handle the final message! °,..,°
+                                System.out.println("Client: " + sessionli.getId() + " Says: " +  sessionli.getMsg().getHello() + " !");
                                 try {
                                     sessionli.getChannel().close();
                                 } catch (IOException e) {

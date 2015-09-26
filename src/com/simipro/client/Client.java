@@ -1,8 +1,8 @@
 package com.simipro.client;
 
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import com.simipro.serialization.Message;
+
+import java.io.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -16,8 +16,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class Client implements Runnable {
     private final Socket socketli;
+    private final int id;
 
-    public Client(int port) throws IOException {
+    public Client(int port, int id) throws IOException {
+        this.id = id;
         socketli = new Socket(InetAddress.getLoopbackAddress(), port);
     }
 
@@ -25,9 +27,27 @@ public class Client implements Runnable {
     @Override
     public void run() {
         try {
-            DataOutputStream out = new DataOutputStream(socketli.getOutputStream());
-            out.writeChars("hello world");
+            Message msg = new Message("hello from client: " + id);
+            ObjectOutputStream out = new ObjectOutputStream(socketli.getOutputStream());
+            out.writeObject(msg);
             out.flush();
+
+
+           /* // Just testing serialization
+            ByteArrayOutputStream byteArrayOutput = new ByteArrayOutputStream();
+            ObjectOutputStream out2 = new ObjectOutputStream(byteArrayOutput);
+            out2.writeObject(msg);
+            byte b[] = byteArrayOutput.toByteArray();
+            ByteArrayInputStream inp = new ByteArrayInputStream(b);
+            ObjectInputStream ibjINp = new ObjectInputStream(inp);
+            try {
+                Message dezmsg = (Message) ibjINp.readObject();
+                System.out.println("Ive worked: " + dezmsg.getHello());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            //
+            */
 
 
             socketli.close();
